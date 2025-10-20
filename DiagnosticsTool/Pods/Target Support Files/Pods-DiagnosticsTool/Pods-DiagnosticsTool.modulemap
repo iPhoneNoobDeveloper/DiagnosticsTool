@@ -1,0 +1,6 @@
+framework module Pods_DiagnosticsTool {
+  umbrella header "Pods-DiagnosticsTool-umbrella.h"
+
+  export *
+  module * { export * }
+}
