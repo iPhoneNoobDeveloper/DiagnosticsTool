@@ -16,6 +16,21 @@
 		46C3511C2EA4737F004FEAD9 /* DiagnosticsToolTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C3511B2EA4737F004FEAD9 /* DiagnosticsToolTests.m */; };
 		46C351262EA4737F004FEAD9 /* DiagnosticsToolUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C351252EA4737F004FEAD9 /* DiagnosticsToolUITests.m */; };
 		46C351282EA4737F004FEAD9 /* DiagnosticsToolUITestsLaunchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C351272EA4737F004FEAD9 /* DiagnosticsToolUITestsLaunchTests.m */; };
+		46C3513F2EA5351F004FEAD9 /* AppCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C3513A2EA5351E004FEAD9 /* AppCoordinator.m */; };
+		46C351402EA5351F004FEAD9 /* DiagnosticsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C3513C2EA5351F004FEAD9 /* DiagnosticsViewController.m */; };
+		46C351412EA5351F004FEAD9 /* LogsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C3513D2EA5351F004FEAD9 /* LogsViewController.m */; };
+		46C351422EA5351F004FEAD9 /* CrashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C3513E2EA5351F004FEAD9 /* CrashViewController.m */; };
+		46C3514B2EA53560004FEAD9 /* MetricsListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C351452EA53560004FEAD9 /* MetricsListener.m */; };
+		46C3514C2EA53560004FEAD9 /* CrashReporterAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C351472EA53560004FEAD9 /* CrashReporterAdapter.m */; };
+		46C3514D2EA53560004FEAD9 /* DiagnosticBundleBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C351482EA53560004FEAD9 /* DiagnosticBundleBuilder.m */; };
+		46C3514E2EA53560004FEAD9 /* Redactor.m in Sources */ = {isa = PBXBuildFile; fileRef = 46C351492EA53560004FEAD9 /* Redactor.m */; };
+		46C351512EA53693004FEAD9 /* MetricKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C351502EA53693004FEAD9 /* MetricKit.framework */; };
+		46C351532EA5369F004FEAD9 /* Network.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C351522EA5369F004FEAD9 /* Network.framework */; };
+		46C351552EA536AB004FEAD9 /* OSLog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C351542EA536AB004FEAD9 /* OSLog.framework */; };
+		46C351562EA5617A004FEAD9 /* MetricKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46C351502EA53693004FEAD9 /* MetricKit.framework */; };
+		891DA741DF7929922EA40116 /* Pods_DiagnosticsToolTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C6CB6BFF2938DE1B563131B /* Pods_DiagnosticsToolTests.framework */; };
+		F69CE9C96253D65888EEAB16 /* Pods_DiagnosticsTool.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4EBF4599B05C3B3E3BFE5EE /* Pods_DiagnosticsTool.framework */; };
+		FA103B055350773028878BF0 /* Pods_DiagnosticsTool_DiagnosticsToolUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8538C336C595230DF3C69031 /* Pods_DiagnosticsTool_DiagnosticsToolUITests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +51,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1767ED783A5BE6359BC82CA3 /* Pods-DiagnosticsTool-DiagnosticsToolUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiagnosticsTool-DiagnosticsToolUITests.debug.xcconfig"; path = "Target Support Files/Pods-DiagnosticsTool-DiagnosticsToolUITests/Pods-DiagnosticsTool-DiagnosticsToolUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		205C80CA8F5829B59EDE1E60 /* Pods-DiagnosticsTool.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiagnosticsTool.debug.xcconfig"; path = "Target Support Files/Pods-DiagnosticsTool/Pods-DiagnosticsTool.debug.xcconfig"; sourceTree = "<group>"; };
 		46C350FF2EA4737C004FEAD9 /* DiagnosticsTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DiagnosticsTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		46C351022EA4737C004FEAD9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		46C351032EA4737C004FEAD9 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -51,6 +68,32 @@
 		46C351212EA4737F004FEAD9 /* DiagnosticsToolUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DiagnosticsToolUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		46C351252EA4737F004FEAD9 /* DiagnosticsToolUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DiagnosticsToolUITests.m; sourceTree = "<group>"; };
 		46C351272EA4737F004FEAD9 /* DiagnosticsToolUITestsLaunchTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DiagnosticsToolUITestsLaunchTests.m; sourceTree = "<group>"; };
+		46C351372EA5351E004FEAD9 /* AppCoordinator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppCoordinator.h; sourceTree = "<group>"; };
+		46C351382EA5351E004FEAD9 /* CrashViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrashViewController.h; sourceTree = "<group>"; };
+		46C351392EA5351E004FEAD9 /* DiagnosticsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiagnosticsViewController.h; sourceTree = "<group>"; };
+		46C3513A2EA5351E004FEAD9 /* AppCoordinator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppCoordinator.m; sourceTree = "<group>"; };
+		46C3513B2EA5351E004FEAD9 /* LogsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogsViewController.h; sourceTree = "<group>"; };
+		46C3513C2EA5351F004FEAD9 /* DiagnosticsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiagnosticsViewController.m; sourceTree = "<group>"; };
+		46C3513D2EA5351F004FEAD9 /* LogsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogsViewController.m; sourceTree = "<group>"; };
+		46C3513E2EA5351F004FEAD9 /* CrashViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrashViewController.m; sourceTree = "<group>"; };
+		46C351432EA53560004FEAD9 /* DiagnosticBundleBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiagnosticBundleBuilder.h; sourceTree = "<group>"; };
+		46C351442EA53560004FEAD9 /* MetricsListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetricsListener.h; sourceTree = "<group>"; };
+		46C351452EA53560004FEAD9 /* MetricsListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetricsListener.m; sourceTree = "<group>"; };
+		46C351462EA53560004FEAD9 /* CrashReporterAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrashReporterAdapter.h; sourceTree = "<group>"; };
+		46C351472EA53560004FEAD9 /* CrashReporterAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrashReporterAdapter.m; sourceTree = "<group>"; };
+		46C351482EA53560004FEAD9 /* DiagnosticBundleBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiagnosticBundleBuilder.m; sourceTree = "<group>"; };
+		46C351492EA53560004FEAD9 /* Redactor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Redactor.m; sourceTree = "<group>"; };
+		46C3514A2EA53560004FEAD9 /* Redactor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Redactor.h; sourceTree = "<group>"; };
+		46C351502EA53693004FEAD9 /* MetricKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetricKit.framework; path = System/Library/Frameworks/MetricKit.framework; sourceTree = SDKROOT; };
+		46C351522EA5369F004FEAD9 /* Network.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Network.framework; path = System/Library/Frameworks/Network.framework; sourceTree = SDKROOT; };
+		46C351542EA536AB004FEAD9 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = System/Library/Frameworks/OSLog.framework; sourceTree = SDKROOT; };
+		777D824C6AE0DDBA54BDC946 /* Pods-DiagnosticsTool-DiagnosticsToolUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiagnosticsTool-DiagnosticsToolUITests.release.xcconfig"; path = "Target Support Files/Pods-DiagnosticsTool-DiagnosticsToolUITests/Pods-DiagnosticsTool-DiagnosticsToolUITests.release.xcconfig"; sourceTree = "<group>"; };
+		7C6CB6BFF2938DE1B563131B /* Pods_DiagnosticsToolTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DiagnosticsToolTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8538C336C595230DF3C69031 /* Pods_DiagnosticsTool_DiagnosticsToolUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DiagnosticsTool_DiagnosticsToolUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4EBF4599B05C3B3E3BFE5EE /* Pods_DiagnosticsTool.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DiagnosticsTool.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4BD0796CB00CE1E3144D0C8 /* Pods-DiagnosticsTool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiagnosticsTool.release.xcconfig"; path = "Target Support Files/Pods-DiagnosticsTool/Pods-DiagnosticsTool.release.xcconfig"; sourceTree = "<group>"; };
+		C7374B5022BE29B06025073B /* Pods-DiagnosticsToolTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiagnosticsToolTests.debug.xcconfig"; path = "Target Support Files/Pods-DiagnosticsToolTests/Pods-DiagnosticsToolTests.debug.xcconfig"; sourceTree = "<group>"; };
+		FB6FD19B593968F0CEA9EDE1 /* Pods-DiagnosticsToolTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiagnosticsToolTests.release.xcconfig"; path = "Target Support Files/Pods-DiagnosticsToolTests/Pods-DiagnosticsToolTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +101,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46C351562EA5617A004FEAD9 /* MetricKit.framework in Frameworks */,
+				46C351552EA536AB004FEAD9 /* OSLog.framework in Frameworks */,
+				46C351532EA5369F004FEAD9 /* Network.framework in Frameworks */,
+				46C351512EA53693004FEAD9 /* MetricKit.framework in Frameworks */,
+				F69CE9C96253D65888EEAB16 /* Pods_DiagnosticsTool.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +113,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				891DA741DF7929922EA40116 /* Pods_DiagnosticsToolTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,6 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA103B055350773028878BF0 /* Pods_DiagnosticsTool_DiagnosticsToolUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +135,8 @@
 				46C3511A2EA4737F004FEAD9 /* DiagnosticsToolTests */,
 				46C351242EA4737F004FEAD9 /* DiagnosticsToolUITests */,
 				46C351002EA4737C004FEAD9 /* Products */,
+				46C3514F2EA53693004FEAD9 /* Frameworks */,
+				D8B0DD9CD185462C42EFB346 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,6 +153,7 @@
 		46C351012EA4737C004FEAD9 /* DiagnosticsTool */ = {
 			isa = PBXGroup;
 			children = (
+				46C351362EA5334F004FEAD9 /* UI */,
 				46C351352EA47560004FEAD9 /* Features */,
 				46C351342EA4755A004FEAD9 /* Core */,
 				46C351022EA4737C004FEAD9 /* AppDelegate.h */,
@@ -136,6 +189,14 @@
 		46C351342EA4755A004FEAD9 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				46C351462EA53560004FEAD9 /* CrashReporterAdapter.h */,
+				46C351472EA53560004FEAD9 /* CrashReporterAdapter.m */,
+				46C351432EA53560004FEAD9 /* DiagnosticBundleBuilder.h */,
+				46C351482EA53560004FEAD9 /* DiagnosticBundleBuilder.m */,
+				46C351442EA53560004FEAD9 /* MetricsListener.h */,
+				46C351452EA53560004FEAD9 /* MetricsListener.m */,
+				46C3514A2EA53560004FEAD9 /* Redactor.h */,
+				46C351492EA53560004FEAD9 /* Redactor.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -147,6 +208,47 @@
 			path = Features;
 			sourceTree = "<group>";
 		};
+		46C351362EA5334F004FEAD9 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				46C351372EA5351E004FEAD9 /* AppCoordinator.h */,
+				46C3513A2EA5351E004FEAD9 /* AppCoordinator.m */,
+				46C351382EA5351E004FEAD9 /* CrashViewController.h */,
+				46C3513E2EA5351F004FEAD9 /* CrashViewController.m */,
+				46C351392EA5351E004FEAD9 /* DiagnosticsViewController.h */,
+				46C3513C2EA5351F004FEAD9 /* DiagnosticsViewController.m */,
+				46C3513B2EA5351E004FEAD9 /* LogsViewController.h */,
+				46C3513D2EA5351F004FEAD9 /* LogsViewController.m */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		46C3514F2EA53693004FEAD9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				46C351542EA536AB004FEAD9 /* OSLog.framework */,
+				46C351522EA5369F004FEAD9 /* Network.framework */,
+				46C351502EA53693004FEAD9 /* MetricKit.framework */,
+				B4EBF4599B05C3B3E3BFE5EE /* Pods_DiagnosticsTool.framework */,
+				8538C336C595230DF3C69031 /* Pods_DiagnosticsTool_DiagnosticsToolUITests.framework */,
+				7C6CB6BFF2938DE1B563131B /* Pods_DiagnosticsToolTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D8B0DD9CD185462C42EFB346 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				205C80CA8F5829B59EDE1E60 /* Pods-DiagnosticsTool.debug.xcconfig */,
+				C4BD0796CB00CE1E3144D0C8 /* Pods-DiagnosticsTool.release.xcconfig */,
+				1767ED783A5BE6359BC82CA3 /* Pods-DiagnosticsTool-DiagnosticsToolUITests.debug.xcconfig */,
+				777D824C6AE0DDBA54BDC946 /* Pods-DiagnosticsTool-DiagnosticsToolUITests.release.xcconfig */,
+				C7374B5022BE29B06025073B /* Pods-DiagnosticsToolTests.debug.xcconfig */,
+				FB6FD19B593968F0CEA9EDE1 /* Pods-DiagnosticsToolTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -154,9 +256,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 46C3512B2EA4737F004FEAD9 /* Build configuration list for PBXNativeTarget "DiagnosticsTool" */;
 			buildPhases = (
+				297C6EFA1855D57AE335E6A9 /* [CP] Check Pods Manifest.lock */,
 				46C350FB2EA4737C004FEAD9 /* Sources */,
 				46C350FC2EA4737C004FEAD9 /* Frameworks */,
 				46C350FD2EA4737C004FEAD9 /* Resources */,
+				406BD95CC0D8630102608F4E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -171,6 +275,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 46C3512E2EA4737F004FEAD9 /* Build configuration list for PBXNativeTarget "DiagnosticsToolTests" */;
 			buildPhases = (
+				8FBE2B80C115F27B45D0B6A8 /* [CP] Check Pods Manifest.lock */,
 				46C351132EA4737F004FEAD9 /* Sources */,
 				46C351142EA4737F004FEAD9 /* Frameworks */,
 				46C351152EA4737F004FEAD9 /* Resources */,
@@ -189,9 +294,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 46C351312EA4737F004FEAD9 /* Build configuration list for PBXNativeTarget "DiagnosticsToolUITests" */;
 			buildPhases = (
+				0AC85B81495C59B5932A3413 /* [CP] Check Pods Manifest.lock */,
 				46C3511D2EA4737F004FEAD9 /* Sources */,
 				46C3511E2EA4737F004FEAD9 /* Frameworks */,
 				46C3511F2EA4737F004FEAD9 /* Resources */,
+				328E4C56BD056F11D83E0DCE /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -271,15 +378,126 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		0AC85B81495C59B5932A3413 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DiagnosticsTool-DiagnosticsToolUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		297C6EFA1855D57AE335E6A9 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DiagnosticsTool-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		328E4C56BD056F11D83E0DCE /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DiagnosticsTool-DiagnosticsToolUITests/Pods-DiagnosticsTool-DiagnosticsToolUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DiagnosticsTool-DiagnosticsToolUITests/Pods-DiagnosticsTool-DiagnosticsToolUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DiagnosticsTool-DiagnosticsToolUITests/Pods-DiagnosticsTool-DiagnosticsToolUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		406BD95CC0D8630102608F4E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DiagnosticsTool/Pods-DiagnosticsTool-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DiagnosticsTool/Pods-DiagnosticsTool-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DiagnosticsTool/Pods-DiagnosticsTool-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8FBE2B80C115F27B45D0B6A8 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DiagnosticsToolTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		46C350FB2EA4737C004FEAD9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46C3514B2EA53560004FEAD9 /* MetricsListener.m in Sources */,
+				46C351422EA5351F004FEAD9 /* CrashViewController.m in Sources */,
+				46C3514C2EA53560004FEAD9 /* CrashReporterAdapter.m in Sources */,
 				46C351072EA4737C004FEAD9 /* ViewController.m in Sources */,
+				46C351412EA5351F004FEAD9 /* LogsViewController.m in Sources */,
+				46C3514E2EA53560004FEAD9 /* Redactor.m in Sources */,
+				46C3514D2EA53560004FEAD9 /* DiagnosticBundleBuilder.m in Sources */,
 				46C3510A2EA4737C004FEAD9 /* DiagnosticsTool.xcdatamodeld in Sources */,
+				46C3513F2EA5351F004FEAD9 /* AppCoordinator.m in Sources */,
 				46C351112EA4737F004FEAD9 /* main.m in Sources */,
 				46C351042EA4737C004FEAD9 /* AppDelegate.m in Sources */,
+				46C351402EA5351F004FEAD9 /* DiagnosticsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,7 +582,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -425,7 +643,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -444,6 +662,7 @@
 		};
 		46C3512C2EA4737F004FEAD9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 205C80CA8F5829B59EDE1E60 /* Pods-DiagnosticsTool.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -461,8 +680,15 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"Sentry\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.DiagnosticsTool;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -471,6 +697,7 @@
 		};
 		46C3512D2EA4737F004FEAD9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C4BD0796CB00CE1E3144D0C8 /* Pods-DiagnosticsTool.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -488,8 +715,15 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"Sentry\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.DiagnosticsTool;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -498,6 +732,7 @@
 		};
 		46C3512F2EA4737F004FEAD9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C7374B5022BE29B06025073B /* Pods-DiagnosticsToolTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -515,6 +750,7 @@
 		};
 		46C351302EA4737F004FEAD9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FB6FD19B593968F0CEA9EDE1 /* Pods-DiagnosticsToolTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -532,6 +768,7 @@
 		};
 		46C351322EA4737F004FEAD9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1767ED783A5BE6359BC82CA3 /* Pods-DiagnosticsTool-DiagnosticsToolUITests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -547,6 +784,7 @@
 		};
 		46C351332EA4737F004FEAD9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 777D824C6AE0DDBA54BDC946 /* Pods-DiagnosticsTool-DiagnosticsToolUITests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
