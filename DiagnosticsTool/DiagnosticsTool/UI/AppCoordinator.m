@@ -5,6 +5,9 @@
 
 @implementation AppCoordinator {
     NSWindow *_window;
+    CrashViewController *_crashVC;
+    LogsViewController *_logsVC;
+    DiagnosticsViewController *_diagnosticsVC;
 }
 
 - (void)start {
@@ -18,17 +21,22 @@
     NSTabView *tabs = [NSTabView new];
     tabs.translatesAutoresizingMaskIntoConstraints = NO;
 
+    // Keep strong references to view controllers so their button actions work
+    _crashVC = [CrashViewController new];
+    _logsVC = [LogsViewController new];
+    _diagnosticsVC = [DiagnosticsViewController new];
+
     NSTabViewItem *crashItem = [[NSTabViewItem alloc] initWithIdentifier:@"crashes"];
     crashItem.label = @"Crashes";
-    crashItem.view = [[CrashViewController new] view];
+    crashItem.view = _crashVC.view;
 
     NSTabViewItem *logItem = [[NSTabViewItem alloc] initWithIdentifier:@"logs"];
     logItem.label = @"Logging";
-    logItem.view = [[LogsViewController new] view];
+    logItem.view = _logsVC.view;
 
     NSTabViewItem *diagItem = [[NSTabViewItem alloc] initWithIdentifier:@"diagnostics"];
     diagItem.label = @"Diagnostics";
-    diagItem.view = [[DiagnosticsViewController new] view];
+    diagItem.view = _diagnosticsVC.view;
 
     [tabs addTabViewItem:crashItem];
     [tabs addTabViewItem:logItem];

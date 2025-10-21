@@ -261,6 +261,7 @@
 				46C350FC2EA4737C004FEAD9 /* Frameworks */,
 				46C350FD2EA4737C004FEAD9 /* Resources */,
 				406BD95CC0D8630102608F4E /* [CP] Embed Pods Frameworks */,
+				46C351582EA7BC6E004FEAD9 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -457,6 +458,23 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DiagnosticsTool/Pods-DiagnosticsTool-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		46C351582EA7BC6E004FEAD9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/bash\n\n################################################################################\n# Sentry dSYM Upload Script\n#\n# Add this as a Build Phase in Xcode:\n# 1. Target Settings → Build Phases → + → New Run Script Phase\n# 2. Move it AFTER \"Embed Pods Frameworks\"\n# 3. Add script: bash \"${PROJECT_DIR}/scripts/upload-dsyms.sh\"\n# 4. Configure variables below\n################################################################################\n\n# ============================================================================\n# CONFIGURATION - Update these values\n# ============================================================================\n\n# Get these from your Sentry project URL:\n# https://sentry.io/organizations/{ORG_SLUG}/projects/{PROJECT_SLUG}/\nSENTRY_ORG_SLUG=\"individual-f56\"\nSENTRY_PROJECT_SLUG=\"diagnosticstool\"\n\n# Create auth token at: https://sentry.io/settings/account/api/auth-tokens/\n# Needs scope: project:releases, project:write\nSENTRY_AUTH_TOKEN=\"${SENTRY_AUTH_TOKEN:-}\"  # Set via environment variable or below\nSENTRY_AUTH_TOKEN=\"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\"  # Uncomment and add token (NOT recommended - use env var)\n\n# Optional: Skip upload in Debug builds (upload only for Release)\nUPLOAD_DEBUG_BUILDS=true  # Set to false to skip Debug builds\n\n# ============================================================================\n# Script - No need to modify below this line\n# ============================================================================\n\n# Disable exit on error temporarily to show better error messages\nset +e\n\necho \"🔍 Sentry dSYM Upload - Diagnostic Info:\"\necho \"   ACTION: ${ACTION:-not set}\"\necho \"   CONFIGURATION: ${CONFIGURATION:-not set}\"\necho \"   DWARF_DSYM_FOLDER_PATH: ${DWARF_DSYM_FOLDER_PATH:-not set}\"\necho \"   PRODUCT_NAME: ${PRODUCT_NAME:-not set}\"\n\n# Skip if not building\nif [ \"${ACTION:-}\" != \"build\" ] && [ \"${ACTION:-}\" != \"archive\" ]; then\n    echo \"ℹ️  Skipping dSYM upload (ACTION='${ACTION:-not set}', not a build/archive)\"\n    exit 0\nfi\n\n# Skip Debug builds if configured\nif [ \"${UPLOAD_DEBUG_BUILDS}\" = \"false\" ] && [ \"${CONFIGURATION:-}\" = \"Debug\" ]; then\n    echo \"ℹ️  Skipping dSYM upload for Debug build\"\n    exit 0\nfi\n\n# Check if sentry-cli is installed\nif ! command -v sentry-cli &> /dev/null; then\n    echo \"❌ ERROR: sentry-cli not found\"\n    echo \"   Install it: brew install getsentry/tools/sentry-cli\"\n    echo \"   Or add to PATH: export PATH=\\\"/opt/homebrew/bin:\\$PATH\\\"\"\n    exit 1\nfi\n\necho \"✅ Found sentry-cli: $(which sentry-cli)\"\n\n# Check for auth token\nif [ -z \"$SENTRY_AUTH_TOKEN\" ]; then\n    echo \"❌ ERROR: SENTRY_AUTH_TOKEN not set\"\n    echo \"\"\n    echo \"   To fix this:\"\n    echo \"   1. Create token: https://sentry.io/settings/account/api/auth-tokens/\"\n    echo \"   2. Add to Xcode build phase environment:\"\n    echo \"      - Target → Build Phases → Upload dSYMs → Environment Variables\"\n    echo \"      - Add: SENTRY_AUTH_TOKEN = your-token\"\n    echo \"   3. OR add to ~/.zshrc:\"\n    echo \"      export SENTRY_AUTH_TOKEN=\\\"your-token\\\"\"\n    echo \"   4. OR uncomment line 24 in this script (NOT recommended for security)\"\n    exit 1\nfi\n\necho \"✅ SENTRY_AUTH_TOKEN is set\"\n\n# Check for dSYM folder\nif [ -z \"${DWARF_DSYM_FOLDER_PATH:-}\" ]; then\n    echo \"❌ ERROR: DWARF_DSYM_FOLDER_PATH not set\"\n    echo \"   Make sure Debug Information Format is set to 'DWARF with dSYM File'\"\n    exit 1\nfi\n\nif [ ! -d \"${DWARF_DSYM_FOLDER_PATH}\" ]; then\n    echo \"❌ ERROR: dSYM folder does not exist: ${DWARF_DSYM_FOLDER_PATH}\"\n    exit 1\nfi\n\n# Count dSYM files\nDSYM_COUNT=$(find \"${DWARF_DSYM_FOLDER_PATH}\" -name \"*.dSYM\" -type d 2>/dev/null | wc -l | tr -d ' ')\necho \"📂 Found ${DSYM_COUNT} dSYM file(s) in ${DWARF_DSYM_FOLDER_PATH}\"\n\nif [ \"$DSYM_COUNT\" -eq 0 ]; then\n    echo \"⚠️  WARNING: No dSYM files found to upload\"\n    echo \"   Check Build Settings → Debug Information Format = 'DWARF with dSYM File'\"\n    exit 0\nfi\n\n# Get version info from Info.plist\nif [ -n \"${INFOPLIST_FILE:-}\" ] && [ -f \"${INFOPLIST_FILE}\" ]; then\n    VERSION=$(/usr/libexec/PlistBuddy -c \"Print :CFBundleShortVersionString\" \"${INFOPLIST_FILE}\" 2>/dev/null || echo \"1.0\")\n    BUILD=$(/usr/libexec/PlistBuddy -c \"Print :CFBundleVersion\" \"${INFOPLIST_FILE}\" 2>/dev/null || echo \"1\")\nelse\n    VERSION=\"1.0\"\n    BUILD=\"1\"\nfi\n\nRELEASE_VERSION=\"${VERSION}-${BUILD}\"\n\necho \"📱 Uploading dSYMs for ${PRODUCT_NAME:-DiagnosticsTool} ${RELEASE_VERSION}\"\n\n# Upload dSYMs\nexport SENTRY_ORG=\"${SENTRY_ORG_SLUG}\"\nexport SENTRY_PROJECT=\"${SENTRY_PROJECT_SLUG}\"\n\necho \"🚀 Running: sentry-cli upload-dif...\"\n\nsentry-cli upload-dif \\\n    --auth-token \"${SENTRY_AUTH_TOKEN}\" \\\n    --org \"${SENTRY_ORG}\" \\\n    --project \"${SENTRY_PROJECT}\" \\\n    \"${DWARF_DSYM_FOLDER_PATH}\"\n\nUPLOAD_RESULT=$?\n\nif [ $UPLOAD_RESULT -eq 0 ]; then\n    echo \"✅ dSYM upload complete for release ${RELEASE_VERSION}\"\n    exit 0\nelse\n    echo \"❌ ERROR: dSYM upload failed with code ${UPLOAD_RESULT}\"\n    echo \"   Check the error message above for details\"\n    exit 1\nfi\n";
+		};
 		8FBE2B80C115F27B45D0B6A8 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -579,7 +597,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;

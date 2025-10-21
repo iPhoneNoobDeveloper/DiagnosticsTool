@@ -30,9 +30,9 @@
         options.environment = @"production";
 #endif
     }];
-    
-    [SentrySDK captureMessage:@"Sentry macOS setup complete!"];
-    
+
+    // Sentry is now initialized and ready to capture crashes
+    // Test message removed - use CrashViewController to generate real crashes
 }
 
 - (void)addBreadcrumb:(NSString *)message data:(NSDictionary *)data {
