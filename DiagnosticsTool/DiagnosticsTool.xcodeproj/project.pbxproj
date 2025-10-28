@@ -31,7 +31,8 @@
 		891DA741DF7929922EA40116 /* Pods_DiagnosticsToolTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C6CB6BFF2938DE1B563131B /* Pods_DiagnosticsToolTests.framework */; };
 		F69CE9C96253D65888EEAB16 /* Pods_DiagnosticsTool.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4EBF4599B05C3B3E3BFE5EE /* Pods_DiagnosticsTool.framework */; };
 		FA103B055350773028878BF0 /* Pods_DiagnosticsTool_DiagnosticsToolUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8538C336C595230DF3C69031 /* Pods_DiagnosticsTool_DiagnosticsToolUITests.framework */; };
-/* End PBXBuildFile section */
+		DD3935D4AE5F46A6A6E1 /* LogCollector.m in Sources */ = {isa = PBXBuildFile; fileRef = 7049D6C568164D7CB9D8 /* LogCollector.m */; };
+	/* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		46C351182EA4737F004FEAD9 /* PBXContainerItemProxy */ = {
@@ -94,7 +95,9 @@
 		C4BD0796CB00CE1E3144D0C8 /* Pods-DiagnosticsTool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiagnosticsTool.release.xcconfig"; path = "Target Support Files/Pods-DiagnosticsTool/Pods-DiagnosticsTool.release.xcconfig"; sourceTree = "<group>"; };
 		C7374B5022BE29B06025073B /* Pods-DiagnosticsToolTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiagnosticsToolTests.debug.xcconfig"; path = "Target Support Files/Pods-DiagnosticsToolTests/Pods-DiagnosticsToolTests.debug.xcconfig"; sourceTree = "<group>"; };
 		FB6FD19B593968F0CEA9EDE1 /* Pods-DiagnosticsToolTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiagnosticsToolTests.release.xcconfig"; path = "Target Support Files/Pods-DiagnosticsToolTests/Pods-DiagnosticsToolTests.release.xcconfig"; sourceTree = "<group>"; };
-/* End PBXFileReference section */
+		774D61F1329345F2841B /* LogCollector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogCollector.h; sourceTree = "<group>"; };
+		7049D6C568164D7CB9D8 /* LogCollector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogCollector.m; sourceTree = "<group>"; };
+	/* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		46C350FC2EA4737C004FEAD9 /* Frameworks */ = {
@@ -191,6 +194,8 @@
 			children = (
 				46C351462EA53560004FEAD9 /* CrashReporterAdapter.h */,
 				46C351472EA53560004FEAD9 /* CrashReporterAdapter.m */,
+				774D61F1329345F2841B /* LogCollector.h */,
+				7049D6C568164D7CB9D8 /* LogCollector.m */,
 				46C351432EA53560004FEAD9 /* DiagnosticBundleBuilder.h */,
 				46C351482EA53560004FEAD9 /* DiagnosticBundleBuilder.m */,
 				46C351442EA53560004FEAD9 /* MetricsListener.h */,
@@ -507,6 +512,7 @@
 				46C3514B2EA53560004FEAD9 /* MetricsListener.m in Sources */,
 				46C351422EA5351F004FEAD9 /* CrashViewController.m in Sources */,
 				46C3514C2EA53560004FEAD9 /* CrashReporterAdapter.m in Sources */,
+				DD3935D4AE5F46A6A6E1 /* LogCollector.m in Sources */,
 				46C351072EA4737C004FEAD9 /* ViewController.m in Sources */,
 				46C351412EA5351F004FEAD9 /* LogsViewController.m in Sources */,
 				46C3514E2EA53560004FEAD9 /* Redactor.m in Sources */,
