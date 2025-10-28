@@ -7,12 +7,13 @@
 
 #import "AppDelegate.h"
 #import <os/log.h>
-#import <Network/Network.h>
+//#import <Network/Network.h>
 @import MetricKit;
 
 #import "AppCoordinator.h"
-#import "Core/CrashReporterAdapter.h"
-#import "Core/MetricsListener.h"
+#import "CrashReporterAdapter.h"
+#import "MetricsListener.h"
+#import "LogCollector.h"
 
 @interface AppDelegate ()
 - (void)save;
@@ -24,15 +25,26 @@
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+    // Initialize log collector
+    [[LogCollector shared] info:@"Application launching..."];
+    [[LogCollector shared] info:[NSString stringWithFormat:@"macOS Version: %@",
+                                 [[NSProcessInfo processInfo] operatingSystemVersionString]]];
+
+    // Start crash reporter
     [[CrashReporterAdapter shared] start];
+    [[LogCollector shared] info:@"Sentry crash reporter started"];
+
+    // Start metrics listener
     _metricsListener = [MetricsListener new];
     if (@available(macOS 12.0, *)) {
         [[MXMetricManager sharedManager] addSubscriber:_metricsListener];
-        // Note: MXDiagnosticManager is not available on macOS
-        // Crash diagnostics are handled via Sentry instead
+        [[LogCollector shared] info:@"MetricKit listener registered"];
     }
+
+    // Start UI coordinator
     _coordinator = [AppCoordinator new];
     [_coordinator start];
+    [[LogCollector shared] info:@"UI coordinator started - application ready"];
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
