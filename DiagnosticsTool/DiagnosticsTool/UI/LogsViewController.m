@@ -3,6 +3,7 @@
 #import <Network/Network.h>
 #import "Redactor.h"
 #import "CrashReporterAdapter.h"
+#import "LogCollector.h"
 
 static os_log_t log_ui;
 static os_log_t log_net;
@@ -49,15 +50,21 @@ static os_log_t log_net;
 }
 
 - (void)emitLogs {
+    [[LogCollector shared] info:@"User clicked: Emit sample logs"];
     NSString *user = [Redactor safeString:@"alice@example.com"];
     os_log_with_type(log_ui, OS_LOG_TYPE_INFO, "Button tapped user=%{public}s", user.UTF8String);
     os_log_with_type(log_net, OS_LOG_TYPE_ERROR, "Network error code=%d", 500);
     NSLog(@"NSLog example with user=%@", user);
+    [[LogCollector shared] info:@"Sample logs emitted to system console"];
     [self append:@"Emitted a few logs. Check Console.app under subsystem com.yourco.app."];
 }
 
 - (void)startNetworkWatch {
-    if (_monitor) return;
+    if (_monitor) {
+        [[LogCollector shared] warning:@"User tried to start network monitor but it's already running"];
+        return;
+    }
+    [[LogCollector shared] info:@"User clicked: Start NWPathMonitor"];
     _monitor = nw_path_monitor_create();
     __weak typeof(self) weakSelf = self;
     nw_path_monitor_set_update_handler(_monitor, ^(nw_path_t path) {
@@ -71,6 +78,8 @@ static os_log_t log_net;
         }
         bool expensive = nw_path_is_expensive(path);
         bool constrained = nw_path_is_constrained(path);
+        [[LogCollector shared] info:[NSString stringWithFormat:@"Network path changed: %@ (expensive=%d, constrained=%d)",
+                                     status, expensive, constrained]];
         os_log_with_type(log_net, OS_LOG_TYPE_INFO, "NWPath changed: %{public}s expensive=%d constrained=%d",
                          status.UTF8String, expensive, constrained);
         [[CrashReporterAdapter shared] addBreadcrumb:@"NWPathChanged"
@@ -81,11 +90,14 @@ static os_log_t log_net;
     });
     nw_path_monitor_set_queue(_monitor, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0));
     nw_path_monitor_start(_monitor);
+    [[LogCollector shared] info:@"Network path monitor started successfully"];
     [self append:@"NWPathMonitor started."];
 }
 
 - (void)addBreadcrumb {
+    [[LogCollector shared] info:@"User clicked: Add Crash breadcrumb"];
     [[CrashReporterAdapter shared] addBreadcrumb:@"UserTappedBreadcrumb" data:@{ @"screen": @"Logs" }];
+    [[LogCollector shared] debug:@"Breadcrumb added to Sentry crash reporter"];
     [self append:@"Breadcrumb added to crash reporter."];
 }
 @end

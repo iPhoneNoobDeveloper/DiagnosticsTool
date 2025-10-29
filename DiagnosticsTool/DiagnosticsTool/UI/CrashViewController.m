@@ -1,6 +1,7 @@
 #import "CrashViewController.h"
 #import <os/log.h>
 #import "CrashReporterAdapter.h"
+#import "LogCollector.h"
 @import Sentry;
 
 @implementation CrashViewController {
@@ -47,9 +48,11 @@
 }
 
 - (void)testSentry {
+    [[LogCollector shared] info:@"User clicked: Test Sentry (No Crash)"];
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO, "Testing Sentry without crash");
     [[CrashReporterAdapter shared] addBreadcrumb:@"Testing Sentry connectivity" data:@{@"test": @"true"}];
     [SentrySDK captureMessage:@"Test message from CrashViewController - Sentry is working!"];
+    [[LogCollector shared] info:@"Sentry test message sent successfully"];
 
     NSAlert *alert = [[NSAlert alloc] init];
     [alert setMessageText:@"Sentry Test"];
@@ -59,21 +62,27 @@
 }
 
 - (void)crashNSException {
+    [[LogCollector shared] warning:@"User triggered NSException crash test"];
     [[CrashReporterAdapter shared] addBreadcrumb:@"User triggered NSException crash" data:@{@"crash_type": @"NSException"}];
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "About to throw NSException intentionally");
+    [[LogCollector shared] error:@"Throwing NSException - app will crash"];
     @throw [NSException exceptionWithName:@"DemoException" reason:@"Intentional NSException for testing Sentry" userInfo:@{@"test": @"crash"}];
 }
 
 - (void)crashBadAccess {
+    [[LogCollector shared] warning:@"User triggered EXC_BAD_ACCESS crash test"];
     [[CrashReporterAdapter shared] addBreadcrumb:@"User triggered EXC_BAD_ACCESS crash" data:@{@"crash_type": @"EXC_BAD_ACCESS"}];
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "About to trigger EXC_BAD_ACCESS intentionally");
+    [[LogCollector shared] error:@"Triggering EXC_BAD_ACCESS - app will crash"];
     volatile char *ptr = (char *)0x1;
     *ptr = 'X';
 }
 
 - (void)crashAssert {
+    [[LogCollector shared] warning:@"User triggered NSAssert crash test"];
     [[CrashReporterAdapter shared] addBreadcrumb:@"User triggered NSAssert crash" data:@{@"crash_type": @"NSAssert"}];
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "About to trigger NSAssert crash intentionally");
+    [[LogCollector shared] error:@"Triggering NSAssert - app will crash"];
     NSAssert(false, @"Intentional assert fail for testing Sentry");
 }
 
