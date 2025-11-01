@@ -31,6 +31,7 @@ DiagnosticsTool/
 │   ├── CrashReporterAdapter  # Sentry integration wrapper
 │   ├── MetricsListener       # MetricKit subscriber
 │   ├── DiagnosticBundleBuilder # Log/sysdiagnose collector
+│   ├── LogCollector         # In-memory application log collection
 │   └── Redactor             # Privacy/PII redaction
 ├── UI/                       # Presentation layer
 │   ├── AppCoordinator       # Navigation coordinator
@@ -202,23 +203,33 @@ options.environment = @"debug"/"production";     // Separate environments
 
 ---
 
-### 3️⃣ `DiagnosticBundleBuilder.h/m` (~62 lines)
+### 3️⃣ `DiagnosticBundleBuilder.h/m` (~450 lines)
 
-**Purpose**: Collects system logs and optional sysdiagnose into a zip archive
+**Purpose**: Collects application logs, system diagnostics, and optional extended diagnostics into a zip archive
 
 **Public API:**
 ```objc
-+ (void)buildWithSysdiagnose:(BOOL)includeSys
++ (void)buildWithSysdiagnose:(BOOL)includeExtended
                   completion:(void(^)(NSURL *zipURL, NSError *error))completion;
 ```
 
+**Note**: Parameter name is `includeSys` but it now triggers **Extended Diagnostics** (not actual sysdiagnose, which requires sudo)
+
 **What it does:**
 1. Creates temporary directory
-2. Runs `/usr/bin/log collect` to gather unified logs → `App.logarchive`
-3. **(Optional)** Runs `/usr/sbin/sysdiagnose` for full system diagnostic
-4. Finds latest sysdiagnose output in `/var/tmp`
-5. Zips everything into `diagnostics.zip`
-6. Returns zip URL via completion handler
+2. **Collects application logs from LogCollector** → `application_logs.txt` (last 10 days)
+3. Collects basic system diagnostic information → `diagnostic_info.txt`
+4. **(Optional)** Collects **Extended System Diagnostics** → `extended_diagnostics.txt`
+   - Running processes (`ps aux`)
+   - Network configuration (`ifconfig -a`)
+   - Hardware information (`system_profiler SPHardwareDataType`)
+   - Software information (`system_profiler SPSoftwareDataType`)
+   - Virtual memory statistics (`vm_stat`)
+   - Disk usage (`df -h`)
+5. Creates README.txt with instructions
+6. Zips everything into timestamped ZIP file
+7. Saves to Downloads folder (sandboxing-compatible)
+8. Returns zip URL via completion handler
 
 **Implementation Details:**
 ```objc
@@ -227,37 +238,117 @@ dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
     // 1. Create temp directory
     NSURL *dir = [self tempDir];
 
-    // 2. Collect logs (always)
-    [self run:@"/usr/bin/log" args:@[@"collect", @"--output", logArchive.path]];
+    // 2. Collect application logs from LogCollector
+    NSURL *appLogsFile = [dir URLByAppendingPathComponent:@"application_logs.txt"];
+    NSString *appLogs = [[LogCollector shared] getLogsFromLastDays:10];
+    [appLogs writeToURL:appLogsFile atomically:YES encoding:NSUTF8StringEncoding error:nil];
 
-    // 3. Optional sysdiagnose (requires sudo for full data)
-    if (includeSys) {
-        [self run:@"/usr/sbin/sysdiagnose" args:@[]];
-        // Copy latest sysdiagnose from /var/tmp
+    // 3. Collect basic system diagnostic information
+    NSURL *diagnosticFile = [dir URLByAppendingPathComponent:@"diagnostic_info.txt"];
+    NSString *diagnosticInfo = [self collectDiagnosticInfo];
+    [diagnosticInfo writeToURL:diagnosticFile atomically:YES encoding:NSUTF8StringEncoding error:nil];
+
+    // 4. Optional extended diagnostics (replaces sudo-requiring sysdiagnose)
+    if (includeExtended) {
+        NSURL *extendedFile = [dir URLByAppendingPathComponent:@"extended_diagnostics.txt"];
+        NSMutableString *extended = [NSMutableString string];
+
+        // Collect running processes
+        [self runCommandAndAppend:@"/bin/ps" args:@[@"aux"] to:extended title:@"RUNNING PROCESSES"];
+
+        // Collect network configuration
+        [self runCommandAndAppend:@"/sbin/ifconfig" args:@[@"-a"] to:extended title:@"NETWORK CONFIGURATION"];
+
+        // Collect hardware information
+        [self runCommandAndAppend:@"/usr/sbin/system_profiler" args:@[@"SPHardwareDataType"]
+                               to:extended title:@"HARDWARE INFORMATION"];
+
+        // Collect software information
+        [self runCommandAndAppend:@"/usr/sbin/system_profiler" args:@[@"SPSoftwareDataType"]
+                               to:extended title:@"SOFTWARE INFORMATION"];
+
+        // Collect VM statistics
+        [self runCommandAndAppend:@"/usr/bin/vm_stat" args:@[] to:extended title:@"VIRTUAL MEMORY STATISTICS"];
+
+        // Collect disk usage
+        [self runCommandAndAppend:@"/bin/df" args:@[@"-h"] to:extended title:@"DISK USAGE"];
+
+        [extended writeToURL:extendedFile atomically:YES encoding:NSUTF8StringEncoding error:nil];
     }
 
-    // 4. Zip everything
-    [self run:@"/usr/bin/zip" args:@[@"-r", zipURL.path, @"."] cwd:dir.path];
+    // 5. Create README with instructions
+    NSURL *readmeFile = [dir URLByAppendingPathComponent:@"README.txt"];
+    [readme writeToURL:readmeFile atomically:YES encoding:NSUTF8StringEncoding error:nil];
 
-    completion(zipURL, nil);
+    // 6. Zip everything to Downloads folder
+    NSURL *downloadsURL = [self desktopURL];  // Actually returns Downloads folder
+    NSURL *finalZipURL = [downloadsURL URLByAppendingPathComponent:zipFilename];
+    [self run:@"/usr/bin/zip" args:@[@"-r", @"-q", finalZipURL.path, @"."] cwd:dir.path];
+
+    // 7. Clean up temp directory
+    [[NSFileManager defaultManager] removeItemAtURL:dir error:nil];
+
+    completion(finalZipURL, nil);
 });
 ```
 
+**Diagnostic Bundle Contents:**
+
+**Always Included:**
+- `application_logs.txt` - Application logs from last 10 days (from LogCollector)
+- `diagnostic_info.txt` - Basic system and app information
+- `README.txt` - Instructions for using the bundle
+
+**Optional (Extended Diagnostics):**
+- `extended_diagnostics.txt` - Detailed system diagnostics (~500 KB - 5 MB)
+  - Running processes list (`ps aux`) - All active processes with CPU/memory usage
+  - Network configuration (`ifconfig -a`) - All network interfaces, IP addresses, status
+  - Hardware information (`system_profiler SPHardwareDataType`) - Chip, memory, serial number
+  - Software information (`system_profiler SPSoftwareDataType`) - macOS build, kernel, uptime
+  - Virtual memory statistics (`vm_stat`) - Memory pressure, page ins/outs, swap usage
+  - Disk usage (`df -h`) - All mounted volumes with free/used space
+
+**What's in diagnostic_info.txt (Basic):**
+- System Information (macOS version, computer name, CPU, memory, uptime)
+- Application Information (bundle ID, version, build number)
+- Process Information (PID, active processors)
+- Environment Variables (safe keys only: HOME, USER, SHELL, LANG, PATH)
+- Disk Information (free space, total space, usage percentage)
+- Crash Reporting Status (Sentry SDK enabled, breadcrumbs tracked)
+
 **Permissions Required:**
-- ✅ Read access to system logs
-- ⚠️  `sysdiagnose` may require elevated privileges for full diagnostic data
+- ✅ Read access to system information APIs (no special entitlements needed)
+- ✅ Write access to Downloads folder (`com.apple.security.files.downloads.read-write`)
+- ✅ Execute standard command-line tools (`ps`, `ifconfig`, `system_profiler`, `vm_stat`, `df`)
+- ❌ No sudo/admin privileges required (works in sandboxed apps!)
 
 **Team Notes:**
-- Uses synchronous `NSTask` execution (blocking)
-- Temporary files not automatically cleaned up (consider adding cleanup)
-- Sysdiagnose takes 2-10 minutes to complete
-- Large output files (50-500MB depending on system state)
+- Uses synchronous `NSTask` execution (blocking on background queue)
+- Temporary files automatically cleaned up after ZIP creation
+- Extended diagnostics takes 30-60 seconds (much faster than old sysdiagnose approach)
+- LogCollector integration provides meaningful application logs
+- Changed from Desktop to Downloads folder for sandboxing compatibility
+- Replaced sudo-requiring `sysdiagnose` with sandboxing-compatible command-line tools
+- Output files: 5-50MB for logs only, 10-60MB with extended diagnostics
+
+**Why Not Real sysdiagnose?**
+- `sysdiagnose` requires sudo (admin password)
+- Sandboxed apps can't prompt for passwords
+- Takes 2-10 minutes to complete
+- Generates 50-500MB files (often too large)
+- **Solution**: Custom extended diagnostics using standard command-line tools
+
+**Sandboxing Solutions:**
+1. **Desktop → Downloads**: Desktop is containerized in sandboxed apps
+2. **sysdiagnose → Extended Diagnostics**: Use tools that don't require sudo
+3. **log collect → LogCollector**: In-memory logging instead of system log access
 
 **Potential Improvements:**
-- Add progress callbacks
-- Implement file cleanup
-- Add file size checks
-- Handle permission errors gracefully
+- Add progress callbacks for UI updates during extended collection
+- Add file size checks before zipping
+- Implement cancellation support
+- Add compression level configuration
+- Add filtering options (e.g., only collect network info)
 
 ---
 
@@ -302,6 +393,147 @@ NSString *safe = [Redactor safeString:email];
 // Redact specific patterns
 + (NSString *)redactPattern:(NSString *)pattern in:(NSString *)text;
 ```
+
+---
+
+### 5️⃣ `LogCollector.h/m` (~186 lines)
+
+**Purpose**: Thread-safe in-memory application log collection system
+
+**Why it exists:**
+- Sandboxed macOS apps can't access system logs via command-line tools
+- Provides application-level logging that captures user actions and app events
+- Collects logs over time (last 7-10 days) for diagnostic bundles
+- Dual logging: both in-memory storage and system console (os_log)
+
+**Public API:**
+```objc
++ (instancetype)shared;                          // Get singleton instance
+- (void)log:(NSString *)message level:(LogLevel)level;  // Log with specific level
+- (void)debug:(NSString *)message;               // Debug-level log
+- (void)info:(NSString *)message;                // Info-level log
+- (void)warning:(NSString *)message;             // Warning-level log
+- (void)error:(NSString *)message;               // Error-level log
+- (NSString *)getAllLogsFormatted;               // Get all logs formatted
+- (NSString *)getLogsFromLastDays:(NSInteger)days;  // Filter by date
+- (void)clearLogs;                               // Clear all logs
+```
+
+**Log Levels:**
+```objc
+typedef NS_ENUM(NSInteger, LogLevel) {
+    LogLevelDebug,    // Detailed debugging information
+    LogLevelInfo,     // General informational messages
+    LogLevelWarning,  // Warning messages - potential issues
+    LogLevelError     // Error messages - actual problems
+};
+```
+
+**Implementation Details:**
+```objc
+@implementation LogCollector {
+    NSMutableArray<LogEntry *> *_logs;  // In-memory log storage
+    NSLock *_lock;                      // Thread-safety
+    NSDateFormatter *_dateFormatter;     // Timestamp formatting
+}
+
+- (void)log:(NSString *)message level:(LogLevel)level {
+    [_lock lock];
+
+    // Create log entry
+    LogEntry *entry = [[LogEntry alloc] init];
+    entry.timestamp = [NSDate date];
+    entry.message = message;
+    entry.level = level;
+    [_logs addObject:entry];
+
+    // Also log to system console
+    os_log_with_type(OS_LOG_DEFAULT, osLogType, "[%s] %s",
+                     [levelStr UTF8String], [message UTF8String]);
+
+    // Memory management - keep only last 10,000 entries
+    if (_logs.count > 10000) {
+        [_logs removeObjectsInRange:NSMakeRange(0, 1000)];
+    }
+
+    [_lock unlock];
+}
+```
+
+**Key Features:**
+1. **Thread-Safe**: Uses NSLock to protect concurrent access
+2. **Memory-Efficient**: Automatically limits to 10,000 entries
+3. **Dual Logging**: Logs appear in both in-memory collection and Console.app
+4. **Formatted Output**: Provides formatted string output with timestamps
+5. **Date Filtering**: Can retrieve logs from last N days
+
+**Usage Examples:**
+```objc
+// Initialization (in AppDelegate)
+[[LogCollector shared] info:@"Application launching..."];
+
+// User action logging (in view controllers)
+[[LogCollector shared] info:@"User clicked: Collect logs"];
+
+// Error logging
+[[LogCollector shared] error:@"Failed to create diagnostic bundle"];
+
+// Warning logging
+[[LogCollector shared] warning:@"Network monitor already running"];
+
+// Retrieve logs for export
+NSString *logs = [[LogCollector shared] getLogsFromLastDays:10];
+```
+
+**Integration Points:**
+- **AppDelegate.m**: Logs app lifecycle events (launch, Sentry init, MetricKit setup)
+- **CrashViewController.m**: Logs user actions before crashes (crash type, test messages)
+- **LogsViewController.m**: Logs network monitoring events (path changes, breadcrumbs)
+- **DiagnosticsViewController.m**: Logs diagnostic collection events (start, success, failure)
+- **DiagnosticBundleBuilder.m**: Exports collected logs to `application_logs.txt`
+
+**Output Format:**
+```
+═══════════════════════════════════════════════════════════
+           APPLICATION LOGS (Last 10 Days)
+           Entries: 42
+═══════════════════════════════════════════════════════════
+
+[2025-01-28 14:32:15.123] [INFO   ] Application launching...
+[2025-01-28 14:32:15.456] [INFO   ] macOS Version: macOS 14.5
+[2025-01-28 14:32:15.789] [INFO   ] Sentry crash reporter started
+[2025-01-28 14:32:16.012] [INFO   ] MetricKit listener registered
+[2025-01-28 14:32:16.234] [INFO   ] UI coordinator started - application ready
+[2025-01-28 14:33:42.567] [INFO   ] User clicked: Test Sentry (No Crash)
+[2025-01-28 14:33:42.890] [INFO   ] Sentry test message sent successfully
+[2025-01-28 14:35:18.123] [WARNING] User triggered NSException crash test
+[2025-01-28 14:35:18.456] [ERROR  ] Throwing NSException - app will crash
+
+═══════════════════════════════════════════════════════════
+           End of Logs (42 entries)
+═══════════════════════════════════════════════════════════
+```
+
+**Team Notes:**
+- Logs persist only in memory - cleared on app restart
+- Provides meaningful context for diagnostic bundles
+- Thread-safe for concurrent logging from multiple components
+- Automatically manages memory by limiting entries
+- Works in sandboxed environment (no file system access needed)
+
+**Benefits Over System Logging:**
+- ✅ Works in sandboxed apps (system `log collect` doesn't work)
+- ✅ Captures application-specific events and user actions
+- ✅ Exportable to diagnostic bundles
+- ✅ Provides last 7-10 days of logs for troubleshooting
+- ✅ Formatted for easy reading
+
+**Potential Improvements:**
+- Add persistent storage (write to file for crash recovery)
+- Add log level filtering (only show errors/warnings)
+- Add search/filter capabilities
+- Add log rotation and archiving
+- Add structured logging with tags/metadata
 
 ---
 
@@ -558,29 +790,35 @@ NSString *safe = [Redactor safeString:email];
 - Size: ~5-50MB
 - Output: `/var/tmp/{UUID}/App.logarchive` → `diagnostics.zip`
 
-**Option 2: Logs + Sysdiagnose (Slow - 2-10 minutes)**
+**Option 2: Logs + Extended Diagnostics (Medium - 30-60 seconds)**
 ```objc
 - (void)collectLogsAndSys {
-    _status.stringValue = @"Collecting logs and sysdiagnose...";
+    _status.stringValue = @"Collecting logs and extended diagnostics...";
 
     [DiagnosticBundleBuilder buildWithSysdiagnose:YES completion:^(NSURL *zipURL, NSError *error) {
-        // Same as above, but includes sysdiagnose
+        // Includes extended diagnostics (not actual sysdiagnose)
     }];
 }
 ```
-- Collects: Unified logs + **full system diagnostic**
-- Time: ~2-10 minutes (sysdiagnose is slow)
-- Size: ~50-500MB
-- Includes: Network configs, kernel logs, memory dumps, etc.
+- Collects: Application logs + basic diagnostics + **extended system diagnostics**
+- Time: ~30-60 seconds (much faster than old sysdiagnose)
+- Size: ~10-60MB (reasonable file size)
+- Includes: Process list, network config, hardware/software info, VM stats, disk usage
 
-**What's in a sysdiagnose:**
-- All system logs (not just your app)
-- Network configuration
-- Memory pressure info
-- Running processes
-- Kernel panic logs
-- WiFi/Bluetooth state
-- And much more...
+**What's in extended_diagnostics.txt:**
+- Running processes list with CPU/memory usage
+- Network configuration (all interfaces, IPs, status)
+- Hardware information (chip, memory, serial number)
+- Software information (macOS build, kernel version)
+- Virtual memory statistics (page ins/outs, swap)
+- Disk usage (all volumes with free/used space)
+
+**Why Not Real sysdiagnose?**
+- Requires sudo (admin password prompt)
+- Sandboxed apps can't prompt for passwords
+- Takes 2-10 minutes to complete
+- Generates 50-500MB files (too large)
+- **Solution**: Custom diagnostics using accessible command-line tools
 
 **Team Notes:**
 - Status updates happen on main queue (good!)
