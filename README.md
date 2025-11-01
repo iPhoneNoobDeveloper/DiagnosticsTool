@@ -16,7 +16,7 @@ A macOS diagnostic and crash reporting application built with Objective-C and in
 - **Framework:** macOS AppKit
 - **Crash Reporting:** Sentry SDK with MetricKit
 - **Dependencies:** CocoaPods
-- **Logging:** Unified Logging (OSLog)
+- **Logging:** Unified Logging (OSLog) + In-Memory LogCollector
 - **Network:** Network framework (NWPathMonitor)
 
 ## 🚀 Quick Start
@@ -62,10 +62,16 @@ open DiagnosticsTool.xcworkspace
 - Track network conditions (expensive, constrained)
 
 ### Diagnostics Tab
-- **Collect logs** - Export unified logs to ZIP
-- **Collect logs + sysdiagnose** - Full diagnostic bundle
+- **Collect logs** - Export application logs and basic system diagnostics to ZIP (fast - 5-10 seconds)
+- **Collect logs + Extended Diagnostics** - Comprehensive diagnostic bundle with detailed system information (30-60 seconds)
+  - Running processes list
+  - Network configuration (all interfaces)
+  - Hardware and software details
+  - Virtual memory statistics
+  - Disk usage information
+- In-memory application log collection from last 10 days
 - Automatic PII redaction (emails, IPs, credit cards)
-- Saves to Desktop with timestamp
+- Saves to Downloads folder with timestamp
 
 ## 🔑 Configuration
 
@@ -117,7 +123,8 @@ DiagnosticsTool/
 ├── Core/
 │   ├── CrashReporterAdapter.m    # Sentry SDK initialization
 │   ├── MetricsListener.m          # MetricKit integration
-│   ├── DiagnosticBundleBuilder.m  # Log collection
+│   ├── DiagnosticBundleBuilder.m  # Log & diagnostic collection
+│   ├── LogCollector.m             # In-memory application log collection
 │   └── Redactor.m                 # PII redaction
 ├── UI/
 │   ├── AppCoordinator.m           # Navigation coordinator
